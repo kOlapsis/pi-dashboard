@@ -1,0 +1,41 @@
+[
+  {
+    "id": "95bc46c9-6c87-45c6-9e8b-5a8f95889191",
+    "name": "Maintenant",
+    "domain": "maintenant.dev",
+    "shareId": null,
+    "resetAt": null,
+    "userId": "41e2b680-648e-4b09-bcd7-3e2b10c06264",
+    "teamId": null,
+    "createdBy": "41e2b680-648e-4b09-bcd7-3e2b10c06264",
+    "createdAt": "2026-03-02T09:41:12.512Z",
+    "updatedAt": "2026-03-02T09:41:12.512Z",
+    "deletedAt": null
+  },
+  {
+    "id": "3f0c1c52-8c4e-4b0b-9c0e-6f7d8f0a2b11",
+    "name": "RestoreProof",
+    "domain": "restoreproof.io",
+    "shareId": null,
+    "resetAt": null,
+    "userId": "41e2b680-648e-4b09-bcd7-3e2b10c06264",
+    "teamId": null,
+    "createdBy": "41e2b680-648e-4b09-bcd7-3e2b10c06264",
+    "createdAt": "2026-05-19T14:02:37.108Z",
+    "updatedAt": "2026-05-19T14:02:37.108Z",
+    "deletedAt": null
+  },
+  {
+    "id": "b7d2e8aa-1f5c-4d58-8a47-0c1f2d3e4a55",
+    "name": "kOlapsis",
+    "domain": "kolapsis.com",
+    "shareId": null,
+    "resetAt": null,
+    "userId": "41e2b680-648e-4b09-bcd7-3e2b10c06264",
+    "teamId": null,
+    "createdBy": "41e2b680-648e-4b09-bcd7-3e2b10c06264",
+    "createdAt": "2026-06-08T08:15:44.921Z",
+    "updatedAt": "2026-06-08T08:15:44.921Z",
+    "deletedAt": null
+  }
+]

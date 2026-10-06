@@ -1,0 +1,64 @@
+{
+  "latitude": 44.842926,
+  "longitude": -0.57560784,
+  "generationtime_ms": 0.40018558502197266,
+  "utc_offset_seconds": 7200,
+  "timezone": "Europe/Paris",
+  "timezone_abbreviation": "GMT+2",
+  "elevation": 16.0,
+  "current_units": {
+    "time": "iso8601",
+    "interval": "seconds",
+    "temperature_2m": "°C",
+    "apparent_temperature": "°C",
+    "weather_code": "wmo code",
+    "is_day": ""
+  },
+  "current": {
+    "time": "2026-10-07T01:00",
+    "interval": 900,
+    "temperature_2m": 19.2,
+    "apparent_temperature": 20.5,
+    "weather_code": 3,
+    "is_day": 0
+  },
+  "daily_units": {
+    "time": "iso8601",
+    "weather_code": "wmo code",
+    "temperature_2m_max": "°C",
+    "temperature_2m_min": "°C",
+    "precipitation_probability_max": "%",
+    "sunrise": "iso8601",
+    "sunset": "iso8601"
+  },
+  "daily": {
+    "time": [
+      "2026-10-07",
+      "2026-10-08"
+    ],
+    "weather_code": [
+      3,
+      3
+    ],
+    "temperature_2m_max": [
+      21.7,
+      18.3
+    ],
+    "temperature_2m_min": [
+      17.6,
+      12.2
+    ],
+    "precipitation_probability_max": [
+      78,
+      28
+    ],
+    "sunrise": [
+      "2026-10-07T08:07",
+      "2026-10-08T08:08"
+    ],
+    "sunset": [
+      "2026-10-07T19:31",
+      "2026-10-08T19:30"
+    ]
+  }
+}

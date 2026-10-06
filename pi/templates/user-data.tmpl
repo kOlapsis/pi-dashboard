@@ -1,0 +1,40 @@
+#cloud-config
+hostname: {{q .Hostname}}
+manage_etc_hosts: true
+timezone: {{q .Timezone}}
+locale: {{q .Locale}}
+keyboard:
+  model: pc105
+  layout: {{q .Keyboard}}
+ssh_pwauth: false
+user:
+  name: {{q .AdminUser}}
+  shell: /bin/bash
+  lock_passwd: true
+  sudo: "ALL=(ALL) NOPASSWD:ALL"
+  ssh_authorized_keys:
+{{- range .SSHKeys}}
+    - {{q .}}
+{{- end}}
+bootcmd:
+  - [rfkill, unblock, wifi]
+write_files:
+  - path: /etc/pi-dashboard/config.yaml
+    owner: root:root
+    permissions: "0600"
+    encoding: b64
+    content: {{q (b64 .Config)}}
+{{- range .Files}}
+  - path: {{q .Path}}
+    owner: root:root
+    permissions: "{{.Mode}}"
+    content: |
+{{indent 6 .Content}}
+{{- end}}
+runcmd:
+  - [systemctl, enable, --now, ssh]
+  - [bash, /usr/local/sbin/pi-dashboard-install]
+power_state:
+  mode: reboot
+  message: provisioned
+  condition: [test, -e, /etc/cloud/cloud-init.disabled]

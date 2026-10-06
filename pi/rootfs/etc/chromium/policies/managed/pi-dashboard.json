@@ -1,0 +1,11 @@
+{
+  "TranslateEnabled": false,
+  "PasswordManagerEnabled": false,
+  "AutofillAddressEnabled": false,
+  "AutofillCreditCardEnabled": false,
+  "SyncDisabled": true,
+  "MetricsReportingEnabled": false,
+  "DefaultBrowserSettingEnabled": false,
+  "BackgroundModeEnabled": false,
+  "BrowserSignin": 0
+}

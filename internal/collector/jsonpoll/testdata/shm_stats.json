@@ -1,0 +1,29 @@
+{
+  "total_instances": 241,
+  "active_instances": 131,
+  "late_instances": 38,
+  "silent_instances": 72,
+  "global_metrics": {
+    "containers_total": 5120,
+    "hosts_total": 410
+  },
+  "per_app_counts": {
+    "Ackify": 17,
+    "Maintenant": 214,
+    "Murmure": 3
+  },
+  "per_app_metrics": {
+    "Ackify": {
+      "containers_total": 91,
+      "hosts_total": 17
+    },
+    "Maintenant": {
+      "containers_total": 4980,
+      "hosts_total": 390
+    },
+    "Murmure": {
+      "containers_total": 49,
+      "hosts_total": 3
+    }
+  }
+}

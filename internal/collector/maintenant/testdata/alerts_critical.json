@@ -1,0 +1,41 @@
+{
+  "critical": [
+    {
+      "id": "al-4",
+      "source": "resource",
+      "alert_type": "container_down",
+      "severity": "critical",
+      "status": "firing",
+      "message": "Container exited with code 137",
+      "entity_type": "container",
+      "entity_id": "4",
+      "entity_name": "postgres",
+      "agent_id": "",
+      "details": "",
+      "resolved_by_id": null,
+      "fired_at": "2026-10-07T11:02:00Z",
+      "resolved_at": null,
+      "created_at": "2026-10-07T11:02:00Z"
+    }
+  ],
+  "warning": [
+    {
+      "id": "al-1",
+      "source": "resource",
+      "alert_type": "cpu_high",
+      "severity": "warning",
+      "status": "firing",
+      "message": "CPU above 85% for 5 minutes",
+      "entity_type": "container",
+      "entity_id": "1",
+      "entity_name": "maintenant",
+      "agent_id": "",
+      "details": "",
+      "resolved_by_id": null,
+      "fired_at": "2026-10-07T11:02:00Z",
+      "resolved_at": null,
+      "created_at": "2026-10-07T11:02:00Z"
+    }
+  ],
+  "info": []
+}

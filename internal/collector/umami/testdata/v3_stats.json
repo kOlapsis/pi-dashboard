@@ -1,0 +1,92 @@
+{
+  "95bc46c9-6c87-45c6-9e8b-5a8f95889191": {
+    "cur": {
+      "pageviews": 2210,
+      "visitors": 498,
+      "visits": 812,
+      "bounces": 398,
+      "totaltime": 104220,
+      "comparison": {
+        "pageviews": 2054,
+        "visitors": 455,
+        "visits": 745,
+        "bounces": 371,
+        "totaltime": 96310
+      }
+    },
+    "prev": {
+      "pageviews": 2054,
+      "visitors": 455,
+      "visits": 745,
+      "bounces": 371,
+      "totaltime": 96310,
+      "comparison": {
+        "pageviews": 1980,
+        "visitors": 431,
+        "visits": 702,
+        "bounces": 340,
+        "totaltime": 90118
+      }
+    }
+  },
+  "3f0c1c52-8c4e-4b0b-9c0e-6f7d8f0a2b11": {
+    "cur": {
+      "pageviews": 610,
+      "visitors": 171,
+      "visits": 240,
+      "bounces": 96,
+      "totaltime": 28110,
+      "comparison": {
+        "pageviews": 640,
+        "visitors": 180,
+        "visits": 251,
+        "bounces": 101,
+        "totaltime": 29544
+      }
+    },
+    "prev": {
+      "pageviews": 640,
+      "visitors": 180,
+      "visits": 251,
+      "bounces": 101,
+      "totaltime": 29544,
+      "comparison": {
+        "pageviews": 598,
+        "visitors": 166,
+        "visits": 233,
+        "bounces": 90,
+        "totaltime": 27001
+      }
+    }
+  },
+  "b7d2e8aa-1f5c-4d58-8a47-0c1f2d3e4a55": {
+    "cur": {
+      "pageviews": 180,
+      "visitors": 74,
+      "visits": 96,
+      "bounces": 41,
+      "totaltime": 7011,
+      "comparison": {
+        "pageviews": 150,
+        "visitors": 58,
+        "visits": 71,
+        "bounces": 30,
+        "totaltime": 5320
+      }
+    },
+    "prev": {
+      "pageviews": 150,
+      "visitors": 58,
+      "visits": 71,
+      "bounces": 30,
+      "totaltime": 5320,
+      "comparison": {
+        "pageviews": 160,
+        "visitors": 62,
+        "visits": 80,
+        "bounces": 36,
+        "totaltime": 6102
+      }
+    }
+  }
+}

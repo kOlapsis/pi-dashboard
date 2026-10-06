@@ -1,0 +1,70 @@
+{
+  "groups": [
+    {
+      "name": "maintenant",
+      "source": "compose",
+      "containers": [
+        {"id": "1", "external_id": "000000000001", "agent_id": "", "name": "maintenant", "image": "ghcr.io/kolapsis/maintenant:1.8.1", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null},
+        {"id": "2", "external_id": "000000000002", "agent_id": "", "name": "maintenant-postgres", "image": "postgres:17-alpine", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null},
+        {"id": "3", "external_id": "000000000003", "agent_id": "", "name": "maintenant-agent", "image": "ghcr.io/kolapsis/maintenant:1.8.1", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null}
+      ]
+    },
+    {
+      "name": "traefik",
+      "source": "compose",
+      "containers": [
+        {"id": "4", "external_id": "000000000004", "agent_id": "", "name": "traefik", "image": "traefik:v3.1", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null}
+      ]
+    },
+    {
+      "name": "umami",
+      "source": "compose",
+      "containers": [
+        {"id": "5", "external_id": "000000000005", "agent_id": "", "name": "umami", "image": "ghcr.io/umami-software/umami:postgresql-latest", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null},
+        {"id": "6", "external_id": "000000000006", "agent_id": "", "name": "umami-db", "image": "postgres:16-alpine", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null}
+      ]
+    },
+    {
+      "name": "shm",
+      "source": "compose",
+      "containers": [
+        {"id": "7", "external_id": "000000000007", "agent_id": "", "name": "shm", "image": "ghcr.io/kolapsis/shm:0.9.4", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null},
+        {"id": "8", "external_id": "000000000008", "agent_id": "", "name": "shm-db", "image": "postgres:17-alpine", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null},
+        {"id": "9", "external_id": "000000000009", "agent_id": "", "name": "shm-web", "image": "nginx:1.27-alpine", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null}
+      ]
+    },
+    {
+      "name": "mail",
+      "source": "compose",
+      "containers": [
+        {"id": "10", "external_id": "00000000000a", "agent_id": "", "name": "postfix", "image": "boky/postfix:latest", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null},
+        {"id": "11", "external_id": "00000000000b", "agent_id": "", "name": "opendkim", "image": "instrumentisto/opendkim:latest", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null}
+      ]
+    },
+    {
+      "name": "monitoring",
+      "source": "compose",
+      "containers": [
+        {"id": "12", "external_id": "00000000000c", "agent_id": "", "name": "node-exporter", "image": "prom/node-exporter:v1.8.2", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null},
+        {"id": "13", "external_id": "00000000000d", "agent_id": "", "name": "cadvisor", "image": "gcr.io/cadvisor/cadvisor:v0.49.1", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null},
+        {"id": "14", "external_id": "00000000000e", "agent_id": "", "name": "prometheus", "image": "prom/prometheus:v2.55.0", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null},
+        {"id": "15", "external_id": "00000000000f", "agent_id": "", "name": "grafana", "image": "grafana/grafana:11.3.0", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null}
+      ]
+    },
+    {
+      "name": "tools",
+      "source": "compose",
+      "containers": [
+        {"id": "16", "external_id": "000000000010", "agent_id": "", "name": "backup-job", "image": "restic/restic:0.17.3", "state": "exited", "health_status": null, "has_health_check": false, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null},
+        {"id": "17", "external_id": "000000000011", "agent_id": "", "name": "watchtower", "image": "containrrr/watchtower:1.7.1", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null},
+        {"id": "18", "external_id": "000000000012", "agent_id": "", "name": "registry", "image": "registry:2", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null},
+        {"id": "19", "external_id": "000000000013", "agent_id": "", "name": "redis", "image": "redis:7-alpine", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null},
+        {"id": "20", "external_id": "000000000014", "agent_id": "", "name": "ofelia", "image": "mcuadros/ofelia:0.3.13", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null},
+        {"id": "21", "external_id": "000000000015", "agent_id": "", "name": "dozzle", "image": "amir20/dozzle:v8.5", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null},
+        {"id": "22", "external_id": "000000000016", "agent_id": "", "name": "homepage", "image": "ghcr.io/gethomepage/homepage:v0.9.13", "state": "running", "health_status": "healthy", "has_health_check": true, "is_ignored": false, "alert_severity": "warning", "archived": false, "runtime_type": "docker", "security_insight_count": 0, "security_highest_severity": null}
+      ]
+    }
+  ],
+  "total": 22,
+  "archived_count": 0
+}

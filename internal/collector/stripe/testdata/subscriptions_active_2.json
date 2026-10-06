@@ -1,0 +1,202 @@
+{
+  "object": "list",
+  "url": "/v1/subscriptions",
+  "has_more": false,
+  "data": [
+    {
+      "id": "sub_1Q9xFAKE0000000000000S04",
+      "object": "subscription",
+      "application": null,
+      "billing_cycle_anchor": 1759300004,
+      "cancel_at_period_end": false,
+      "canceled_at": null,
+      "collection_method": "charge_automatically",
+      "created": 1759300004,
+      "currency": "eur",
+      "current_period_end": 1791900000,
+      "current_period_start": 1789300000,
+      "customer": "cus_RFAKE000000004",
+      "default_payment_method": "pm_1Q9xFAKE0000000000000P04",
+      "discount": null,
+      "items": {
+        "object": "list",
+        "data": [
+          {
+            "id": "si_RFAKE000000004",
+            "object": "subscription_item",
+            "created": 1759300004,
+            "metadata": {},
+            "price": {
+              "id": "price_1Q9xFAKEWEEKLY00000000001",
+              "object": "price",
+              "active": true,
+              "billing_scheme": "per_unit",
+              "created": 1759200000,
+              "currency": "eur",
+              "livemode": true,
+              "lookup_key": null,
+              "metadata": {},
+              "nickname": null,
+              "product": "prod_R00000001",
+              "recurring": {
+                "aggregate_usage": null,
+                "interval": "week",
+                "interval_count": 1,
+                "meter": null,
+                "trial_period_days": null,
+                "usage_type": "licensed"
+              },
+              "tax_behavior": "exclusive",
+              "tiers_mode": null,
+              "transform_quantity": null,
+              "type": "recurring",
+              "unit_amount": 700,
+              "unit_amount_decimal": "700"
+            },
+            "quantity": 1,
+            "subscription": "sub_1Q9xFAKE0000000000000S04",
+            "tax_rates": []
+          }
+        ],
+        "has_more": false,
+        "total_count": 1,
+        "url": "/v1/subscription_items?subscription=sub_1Q9xFAKE0000000000000S04"
+      },
+      "livemode": true,
+      "metadata": {},
+      "start_date": 1759300004,
+      "status": "active",
+      "trial_end": null
+    },
+    {
+      "id": "sub_1Q9xFAKE0000000000000S05",
+      "object": "subscription",
+      "application": null,
+      "billing_cycle_anchor": 1759300005,
+      "cancel_at_period_end": false,
+      "canceled_at": null,
+      "collection_method": "charge_automatically",
+      "created": 1759300005,
+      "currency": "eur",
+      "current_period_end": 1791900000,
+      "current_period_start": 1789300000,
+      "customer": "cus_RFAKE000000005",
+      "default_payment_method": "pm_1Q9xFAKE0000000000000P05",
+      "discount": null,
+      "items": {
+        "object": "list",
+        "data": [
+          {
+            "id": "si_RFAKE000000005",
+            "object": "subscription_item",
+            "created": 1759300005,
+            "metadata": {},
+            "price": {
+              "id": "price_1Q9xFAKEMETERED0000000001",
+              "object": "price",
+              "active": true,
+              "billing_scheme": "per_unit",
+              "created": 1759200000,
+              "currency": "eur",
+              "livemode": true,
+              "lookup_key": null,
+              "metadata": {},
+              "nickname": null,
+              "product": "prod_R00000001",
+              "recurring": {
+                "aggregate_usage": "sum",
+                "interval": "month",
+                "interval_count": 1,
+                "meter": null,
+                "trial_period_days": null,
+                "usage_type": "metered"
+              },
+              "tax_behavior": "exclusive",
+              "tiers_mode": null,
+              "transform_quantity": null,
+              "type": "recurring",
+              "unit_amount": 2,
+              "unit_amount_decimal": "2"
+            },
+            "quantity": null,
+            "subscription": "sub_1Q9xFAKE0000000000000S05",
+            "tax_rates": []
+          }
+        ],
+        "has_more": false,
+        "total_count": 1,
+        "url": "/v1/subscription_items?subscription=sub_1Q9xFAKE0000000000000S05"
+      },
+      "livemode": true,
+      "metadata": {},
+      "start_date": 1759300005,
+      "status": "active",
+      "trial_end": null
+    },
+    {
+      "id": "sub_1Q9xFAKE0000000000000S06",
+      "object": "subscription",
+      "application": null,
+      "billing_cycle_anchor": 1759300006,
+      "cancel_at_period_end": false,
+      "canceled_at": null,
+      "collection_method": "charge_automatically",
+      "created": 1759300006,
+      "currency": "eur",
+      "current_period_end": 1791900000,
+      "current_period_start": 1789300000,
+      "customer": "cus_RFAKE000000006",
+      "default_payment_method": "pm_1Q9xFAKE0000000000000P06",
+      "discount": null,
+      "items": {
+        "object": "list",
+        "data": [
+          {
+            "id": "si_RFAKE000000006",
+            "object": "subscription_item",
+            "created": 1759300006,
+            "metadata": {},
+            "price": {
+              "id": "price_1Q9xFAKETIERED00000000001",
+              "object": "price",
+              "active": true,
+              "billing_scheme": "tiered",
+              "created": 1759200000,
+              "currency": "eur",
+              "livemode": true,
+              "lookup_key": null,
+              "metadata": {},
+              "nickname": null,
+              "product": "prod_R00000001",
+              "recurring": {
+                "aggregate_usage": null,
+                "interval": "month",
+                "interval_count": 1,
+                "meter": null,
+                "trial_period_days": null,
+                "usage_type": "licensed"
+              },
+              "tax_behavior": "exclusive",
+              "tiers_mode": "graduated",
+              "transform_quantity": null,
+              "type": "recurring",
+              "unit_amount": null,
+              "unit_amount_decimal": null
+            },
+            "quantity": 1,
+            "subscription": "sub_1Q9xFAKE0000000000000S06",
+            "tax_rates": []
+          }
+        ],
+        "has_more": false,
+        "total_count": 1,
+        "url": "/v1/subscription_items?subscription=sub_1Q9xFAKE0000000000000S06"
+      },
+      "livemode": true,
+      "metadata": {},
+      "start_date": 1759300006,
+      "status": "active",
+      "trial_end": null
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+[
+  {
+    "starred_at": "2025-11-02T09:14:21Z",
+    "user": {
+      "login": "octo-reader",
+      "id": 1000101,
+      "node_id": "MDQ6VXNlcjEwMDAxMDE=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1000101?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/octo-reader",
+      "html_url": "https://github.com/octo-reader",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    }
+  },
+  {
+    "starred_at": "2026-01-19T17:03:55Z",
+    "user": {
+      "login": "fiscal-nerd",
+      "id": 1000102,
+      "node_id": "MDQ6VXNlcjEwMDAxMDI=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1000102?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/fiscal-nerd",
+      "html_url": "https://github.com/fiscal-nerd",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    }
+  },
+  {
+    "starred_at": "2026-07-14T21:48:10Z",
+    "user": {
+      "login": "freelance-go",
+      "id": 1000103,
+      "node_id": "MDQ6VXNlcjEwMDAxMDM=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1000103?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/freelance-go",
+      "html_url": "https://github.com/freelance-go",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    }
+  },
+  {
+    "starred_at": "2026-10-05T22:00:00Z",
+    "user": {
+      "login": "midnight-star",
+      "id": 1000104,
+      "node_id": "MDQ6VXNlcjEwMDAxMDQ=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1000104?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/midnight-star",
+      "html_url": "https://github.com/midnight-star",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    }
+  },
+  {
+    "starred_at": "2026-10-06T08:31:47Z",
+    "user": {
+      "login": "early-bird",
+      "id": 1000105,
+      "node_id": "MDQ6VXNlcjEwMDAxMDU=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1000105?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/early-bird",
+      "html_url": "https://github.com/early-bird",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    }
+  }
+]

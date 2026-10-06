@@ -1,0 +1,75 @@
+{
+  "object": "list",
+  "url": "/v1/charges",
+  "has_more": false,
+  "data": [
+    {
+      "id": "ch_3Q9xFAKE000000000000000D",
+      "object": "charge",
+      "amount": 1000,
+      "amount_captured": 1000,
+      "amount_refunded": 0,
+      "application": null,
+      "balance_transaction": "txn_3Q9xFAKE000000000000000D",
+      "billing_details": {
+        "address": {
+          "country": "FR"
+        },
+        "email": "client-d@example.invalid",
+        "name": null
+      },
+      "calculated_statement_descriptor": "KOLAPSIS",
+      "captured": true,
+      "created": 1791025800,
+      "currency": "usd",
+      "customer": "cus_RFAKE0000000D",
+      "description": null,
+      "disputed": false,
+      "failure_code": null,
+      "failure_message": null,
+      "invoice": null,
+      "livemode": true,
+      "metadata": {},
+      "paid": true,
+      "payment_intent": "pi_3Q9xFAKE000000000000000D",
+      "payment_method": "pm_1Q9xFAKE0000000000000PD",
+      "refunded": false,
+      "statement_descriptor": null,
+      "status": "succeeded"
+    },
+    {
+      "id": "ch_3Q9xFAKE000000000000000E",
+      "object": "charge",
+      "amount": 2900,
+      "amount_captured": 2900,
+      "amount_refunded": 0,
+      "application": null,
+      "balance_transaction": "txn_3Q9xFAKE000000000000000E",
+      "billing_details": {
+        "address": {
+          "country": "FR"
+        },
+        "email": "client-e@example.invalid",
+        "name": null
+      },
+      "calculated_statement_descriptor": "KOLAPSIS",
+      "captured": true,
+      "created": 1790839800,
+      "currency": "eur",
+      "customer": "cus_RFAKE0000000E",
+      "description": null,
+      "disputed": false,
+      "failure_code": null,
+      "failure_message": null,
+      "invoice": "in_1Q9xFAKE0000000000000004",
+      "livemode": true,
+      "metadata": {},
+      "paid": true,
+      "payment_intent": "pi_3Q9xFAKE000000000000000E",
+      "payment_method": "pm_1Q9xFAKE0000000000000PE",
+      "refunded": false,
+      "statement_descriptor": null,
+      "status": "succeeded"
+    }
+  ]
+}

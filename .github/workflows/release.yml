@@ -1,0 +1,29 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - name: Build
+        env:
+          CGO_ENABLED: "0"
+          GOOS: linux
+          GOARCH: arm64
+        run: go build -trimpath -ldflags "-s -w -X main.version=${GITHUB_REF_NAME}" -o pi-dashboard_linux_arm64 ./cmd/pi-dashboard
+      - name: Checksums
+        run: sha256sum pi-dashboard_linux_arm64 > SHA256SUMS
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" pi-dashboard_linux_arm64 SHA256SUMS --generate-notes --verify-tag

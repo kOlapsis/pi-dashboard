@@ -1,0 +1,64 @@
+{
+  "hosts": [
+    {
+      "agent_id": "",
+      "hostname": "Local",
+      "label": "Local",
+      "is_local": true,
+      "available": true,
+      "cpu_percent": 12.4,
+      "mem_used": 3100000000,
+      "mem_total": 8000000000,
+      "mem_percent": 38.8,
+      "disk_total": 250000000000,
+      "disk_used": 61000000000,
+      "disk_percent": 24.4,
+      "container_count": 9
+    },
+    {
+      "agent_id": "ag-7c1",
+      "hostname": "node-a",
+      "label": "node-a",
+      "is_local": false,
+      "available": true,
+      "cpu_percent": 31.0,
+      "mem_used": 5200000000,
+      "mem_total": 16000000000,
+      "mem_percent": 32.5,
+      "disk_total": 500000000000,
+      "disk_used": 120000000000,
+      "disk_percent": 24.0,
+      "container_count": 8
+    },
+    {
+      "agent_id": "ag-7c2",
+      "hostname": "node-b",
+      "label": "node-b",
+      "is_local": false,
+      "available": true,
+      "cpu_percent": 8.9,
+      "mem_used": 2400000000,
+      "mem_total": 8000000000,
+      "mem_percent": 30.0,
+      "disk_total": 250000000000,
+      "disk_used": 33000000000,
+      "disk_percent": 13.2,
+      "container_count": 6
+    },
+    {
+      "agent_id": "ag-9d4",
+      "hostname": "edge-1",
+      "label": "edge-1",
+      "is_local": false,
+      "available": false,
+      "cpu_percent": 0,
+      "mem_used": 0,
+      "mem_total": 1,
+      "mem_percent": 0,
+      "disk_total": 1,
+      "disk_used": 0,
+      "disk_percent": 0,
+      "container_count": 1
+    }
+  ]
+}

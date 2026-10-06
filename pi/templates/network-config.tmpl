@@ -1,0 +1,17 @@
+network:
+  version: 2
+  ethernets:
+    eth0:
+      dhcp4: true
+      dhcp6: true
+      optional: true
+{{- if .SSID}}
+  wifis:
+    wlan0:
+      dhcp4: true
+      regulatory-domain: {{q .Country}}
+      access-points:
+        {{q .SSID}}:
+          password: {{q .PSK}}
+      optional: true
+{{- end}}

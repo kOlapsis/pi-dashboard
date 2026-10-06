@@ -1,0 +1,109 @@
+{
+  "object": "list",
+  "url": "/v1/charges",
+  "has_more": true,
+  "data": [
+    {
+      "id": "ch_3Q9xFAKE000000000000000F",
+      "object": "charge",
+      "amount": 2900,
+      "amount_captured": 0,
+      "amount_refunded": 0,
+      "application": null,
+      "balance_transaction": null,
+      "billing_details": {
+        "address": {
+          "country": "FR"
+        },
+        "email": "client-f@example.invalid",
+        "name": null
+      },
+      "calculated_statement_descriptor": "KOLAPSIS",
+      "captured": false,
+      "created": 1790611200,
+      "currency": "eur",
+      "customer": "cus_RFAKE0000000F",
+      "description": null,
+      "disputed": false,
+      "failure_code": "card_declined",
+      "failure_message": "Your card was declined.",
+      "invoice": null,
+      "livemode": true,
+      "metadata": {},
+      "paid": false,
+      "payment_intent": "pi_3Q9xFAKE000000000000000F",
+      "payment_method": "pm_1Q9xFAKE0000000000000PF",
+      "refunded": false,
+      "statement_descriptor": null,
+      "status": "failed"
+    },
+    {
+      "id": "ch_3Q9xFAKE000000000000000G",
+      "object": "charge",
+      "amount": 14900,
+      "amount_captured": 14900,
+      "amount_refunded": 2000,
+      "application": null,
+      "balance_transaction": "txn_3Q9xFAKE000000000000000G",
+      "billing_details": {
+        "address": {
+          "country": "FR"
+        },
+        "email": "client-g@example.invalid",
+        "name": null
+      },
+      "calculated_statement_descriptor": "KOLAPSIS",
+      "captured": true,
+      "created": 1790520000,
+      "currency": "eur",
+      "customer": "cus_RFAKE0000000G",
+      "description": "Licence Personal",
+      "disputed": false,
+      "failure_code": null,
+      "failure_message": null,
+      "invoice": null,
+      "livemode": true,
+      "metadata": {},
+      "paid": true,
+      "payment_intent": "pi_3Q9xFAKE000000000000000G",
+      "payment_method": "pm_1Q9xFAKE0000000000000PG",
+      "refunded": false,
+      "statement_descriptor": null,
+      "status": "succeeded"
+    },
+    {
+      "id": "ch_3Q9xFAKE000000000000000H",
+      "object": "charge",
+      "amount": 2900,
+      "amount_captured": 2900,
+      "amount_refunded": 0,
+      "application": null,
+      "balance_transaction": "txn_3Q9xFAKE000000000000000H",
+      "billing_details": {
+        "address": {
+          "country": "FR"
+        },
+        "email": "client-h@example.invalid",
+        "name": null
+      },
+      "calculated_statement_descriptor": "KOLAPSIS",
+      "captured": true,
+      "created": 1790000000,
+      "currency": "eur",
+      "customer": "cus_RFAKE0000000H",
+      "description": null,
+      "disputed": false,
+      "failure_code": null,
+      "failure_message": null,
+      "invoice": "in_1Q9xFAKE0000000000000005",
+      "livemode": true,
+      "metadata": {},
+      "paid": true,
+      "payment_intent": "pi_3Q9xFAKE000000000000000H",
+      "payment_method": "pm_1Q9xFAKE0000000000000PH",
+      "refunded": false,
+      "statement_descriptor": null,
+      "status": "succeeded"
+    }
+  ]
+}

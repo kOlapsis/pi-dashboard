@@ -1,0 +1,140 @@
+{
+  "95bc46c9-6c87-45c6-9e8b-5a8f95889191": {
+    "cur": {
+      "pageviews": {
+        "value": 2210,
+        "prev": 2054
+      },
+      "visitors": {
+        "value": 498,
+        "prev": 455
+      },
+      "visits": {
+        "value": 812,
+        "prev": 745
+      },
+      "bounces": {
+        "value": 398,
+        "prev": 371
+      },
+      "totaltime": {
+        "value": 104220,
+        "prev": 96310
+      }
+    },
+    "prev": {
+      "pageviews": {
+        "value": 2054,
+        "prev": 1980
+      },
+      "visitors": {
+        "value": 455,
+        "prev": 431
+      },
+      "visits": {
+        "value": 745,
+        "prev": 702
+      },
+      "bounces": {
+        "value": 371,
+        "prev": 340
+      },
+      "totaltime": {
+        "value": 96310,
+        "prev": 90118
+      }
+    }
+  },
+  "3f0c1c52-8c4e-4b0b-9c0e-6f7d8f0a2b11": {
+    "cur": {
+      "pageviews": {
+        "value": 610,
+        "prev": 640
+      },
+      "visitors": {
+        "value": 171,
+        "prev": 180
+      },
+      "visits": {
+        "value": 240,
+        "prev": 251
+      },
+      "bounces": {
+        "value": 96,
+        "prev": 101
+      },
+      "totaltime": {
+        "value": 28110,
+        "prev": 29544
+      }
+    },
+    "prev": {
+      "pageviews": {
+        "value": 640,
+        "prev": 598
+      },
+      "visitors": {
+        "value": 180,
+        "prev": 166
+      },
+      "visits": {
+        "value": 251,
+        "prev": 233
+      },
+      "bounces": {
+        "value": 101,
+        "prev": 90
+      },
+      "totaltime": {
+        "value": 29544,
+        "prev": 27001
+      }
+    }
+  },
+  "b7d2e8aa-1f5c-4d58-8a47-0c1f2d3e4a55": {
+    "cur": {
+      "pageviews": {
+        "value": 180,
+        "prev": 150
+      },
+      "visitors": {
+        "value": 74,
+        "prev": 58
+      },
+      "visits": {
+        "value": 96,
+        "prev": 71
+      },
+      "bounces": {
+        "value": 41,
+        "prev": 30
+      },
+      "totaltime": {
+        "value": 7011,
+        "prev": 5320
+      }
+    },
+    "prev": {
+      "pageviews": {
+        "value": 150,
+        "prev": 160
+      },
+      "visitors": {
+        "value": 58,
+        "prev": 62
+      },
+      "visits": {
+        "value": 71,
+        "prev": 80
+      },
+      "bounces": {
+        "value": 30,
+        "prev": 36
+      },
+      "totaltime": {
+        "value": 5320,
+        "prev": 6102
+      }
+    }
+  }
+}

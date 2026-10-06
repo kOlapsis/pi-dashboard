@@ -1,0 +1,17 @@
+[
+  {
+    "starred_at": "2026-09-30T12:11:09Z",
+    "user": {
+      "login": "spec-driven",
+      "id": 1000201,
+      "node_id": "MDQ6VXNlcjEwMDAyMDE=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1000201?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/spec-driven",
+      "html_url": "https://github.com/spec-driven",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    }
+  }
+]

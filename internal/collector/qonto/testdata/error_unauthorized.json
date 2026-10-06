@@ -1,0 +1,8 @@
+{
+  "errors": [
+    {
+      "code": "authorization_token_invalid",
+      "detail": "authorization token invalid"
+    }
+  ]
+}

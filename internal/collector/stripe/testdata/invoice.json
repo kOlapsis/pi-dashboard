@@ -1,0 +1,31 @@
+{
+  "id": "in_1Q9xFAKE0000000000000001",
+  "object": "invoice",
+  "account_country": "FR",
+  "amount_due": 2900,
+  "amount_paid": 2900,
+  "currency": "eur",
+  "customer": "cus_RFAKE0000000A",
+  "livemode": true,
+  "lines": {
+    "object": "list",
+    "data": [
+      {
+        "id": "il_1Q9xFAKE0000000000000001",
+        "object": "line_item",
+        "amount": 2900,
+        "currency": "eur",
+        "description": "1 × Maintenant Pro (at €29.00 / month)",
+        "quantity": 1,
+        "type": "subscription"
+      }
+    ],
+    "has_more": false,
+    "total_count": 1,
+    "url": "/v1/invoices/in_1Q9xFAKE0000000000000001/lines"
+  },
+  "number": "FAKE0001-0001",
+  "paid": true,
+  "status": "paid",
+  "subscription": "sub_1Q9xFAKE0000000000000S01"
+}

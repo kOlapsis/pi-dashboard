@@ -1,0 +1,7 @@
+/out/
+/pi/secrets.env
+/config.yaml
+*.db
+*.db-wal
+*.db-shm
+/pi/cmd/render/render

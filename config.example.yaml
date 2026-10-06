@@ -1,0 +1,84 @@
+listen: 127.0.0.1:8080
+data_dir: /var/lib/pi-dashboard
+timezone: Europe/Paris
+
+ui:
+  scale: auto
+  night:
+    enabled: true
+    from: "23:00"
+    to: "07:00"
+    brightness: 0.35
+    # Commands run by the pi-dashboard service at the window edges. They need a path to the
+    # kiosk's Wayland socket, which the hardened unit does not have by default: see pi/README.md.
+    # panel_off_cmd: [wlopm, --off, HDMI-A-1]
+    # panel_on_cmd: [wlopm, --on, HDMI-A-1]
+
+history:
+  retention_days: 400
+
+# Remove a section to disable its collector. Intervals accept Go durations (60s, 5m, 1h); minimum 30s.
+collectors:
+  mail:
+    user: benjamin@kolapsis.com
+    app_password: "xxxx xxxx xxxx xxxx"
+    latest: 5
+
+  github:
+    org: kOlapsis
+    token: github_pat_xxx
+    traffic_repos: [maintenant, ackify, shm]
+    exclude: [herald]
+
+  umami:
+    base_url: https://umami.kolapsis.com
+    api_key: umami_xxx
+    # username: admin
+    # password: xxx
+    # sites: [{id: 95bc46c9-6c87-45c6-9e8b-5a8f95889191, label: maintenant.dev}]
+
+  stripe:
+    accounts:
+      - {name: Maintenant, key: rk_live_xxx}
+      - {name: RestoreProof, key: rk_live_xxx}
+      - {name: Ackify, key: rk_live_xxx}
+
+  qonto:
+    orgs:
+      - {name: kOlapsis SAS, slug: kolapsis-1234, secret: xxx, warn_below: 5000}
+      - {name: EI, slug: benjamin-touchard-1234, secret: xxx}
+
+  weather:
+    label: Bordeaux
+    lat: 44.8378
+    lon: -0.5792
+
+  calendar:
+    lookahead_days: 7
+    feeds:
+      - {name: kOlapsis, url: "https://calendar.google.com/calendar/ical/xxx/private-xxx/basic.ics"}
+
+  health:
+    sites:
+      - {name: maintenant.dev, url: https://maintenant.dev}
+      - {name: demo, url: https://demo.maintenant.dev}
+      - {name: restoreproof.io, url: https://restoreproof.io}
+      - {name: kolapsis.com, url: https://kolapsis.com}
+      - {name: umami, url: https://umami.kolapsis.com}
+
+  registry:
+    items:
+      - {kind: ghcr, name: maintenant, org: kolapsis, package: maintenant}
+      - {kind: dockerhub, name: ackify, repo: kolapsis/ackify}
+
+  maintenant:
+    instances:
+      - {name: prod, url: "https://maintenant.example.net", mode: status}
+
+  jsonpoll:
+    - name: shm
+      url: https://metrics.kolapsis.com/api/v1/admin/stats
+      basic_auth: {user: xxx, password: xxx}
+      items:
+        - {key: instances, label: Instances, path: per_app_counts.Maintenant, history: true}
+        - {key: active, label: Actives, path: active_instances}

@@ -1,0 +1,121 @@
+{
+  "global_status": "partial_outage",
+  "global_message": "Some systems are experiencing issues",
+  "updated_at": "2026-10-07T12:30:05.412Z",
+  "components": [
+    {
+      "id": "c1",
+      "name": "Application",
+      "status": "operational",
+      "monitors": [
+        {
+          "type": "container",
+          "id": "12",
+          "name": "maintenant",
+          "status": "operational"
+        },
+        {
+          "type": "endpoint",
+          "id": "3",
+          "name": "https://app.example.net/healthz",
+          "status": "operational"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "name": "Database",
+      "status": "degraded",
+      "monitors": [
+        {
+          "type": "container",
+          "id": "14",
+          "name": "postgres",
+          "status": "degraded"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "name": "Reverse proxy",
+      "status": "operational",
+      "monitors": [
+        {
+          "type": "container",
+          "id": "9",
+          "name": "traefik",
+          "status": "operational"
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "name": "Backups",
+      "status": "major_outage",
+      "monitors": [
+        {
+          "type": "heartbeat",
+          "id": "2",
+          "name": "nightly-backup",
+          "status": "major_outage"
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "name": "Certificates",
+      "status": "operational",
+      "monitors": [
+        {
+          "type": "certificate",
+          "id": "5",
+          "name": "app.example.net",
+          "status": "operational"
+        }
+      ]
+    },
+    {
+      "id": "c6",
+      "name": "Mail relay",
+      "status": "operational",
+      "monitors": [
+        {
+          "type": "container",
+          "id": "21",
+          "name": "postfix",
+          "status": "operational"
+        }
+      ]
+    }
+  ],
+  "active_incidents": [
+    {
+      "id": "inc-81f2",
+      "title": "Nightly backup did not report",
+      "severity": "major",
+      "status": "investigating",
+      "components": [
+        "Backups",
+        "Database"
+      ],
+      "created_at": "2026-10-07T02:14:00Z",
+      "latest_update": {
+        "status": "investigating",
+        "message": "Looking into the failed heartbeat.",
+        "created_at": "2026-10-07T02:20:00Z"
+      }
+    }
+  ],
+  "upcoming_maintenance": [
+    {
+      "id": "mw-12",
+      "title": "PostgreSQL minor upgrade",
+      "starts_at": "2026-10-12T21:00:00Z",
+      "ends_at": "2026-10-12T21:30:00Z",
+      "components": [
+        "Database"
+      ]
+    }
+  ],
+  "subscriptions_enabled": false
+}

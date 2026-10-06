@@ -1,0 +1,33 @@
+{
+  "organization": {
+    "slug": "jean-dupont-1234",
+    "legal_name": "EI",
+    "locale": "fr",
+    "legal_share_capital": 1000,
+    "legal_country": "FR",
+    "legal_registration_date": "2026-09-14",
+    "legal_form": "SAS",
+    "legal_address": "1 rue Fictive, 33000 Bordeaux",
+    "legal_sector": "62.01Z",
+    "contract_signed_at": "2026-09-16T09:00:00.000Z",
+    "bank_accounts": [
+      {
+        "id": "0192e0b8-4d2e-7a15-8c63-9e0f1b7d4a01",
+        "slug": "jean-dupont-1234-bank-account-1",
+        "iban": "FR7600000000000000000000000",
+        "bic": "QNTOFRP1XXX",
+        "currency": "EUR",
+        "balance": 3210.1,
+        "balance_cents": 321010,
+        "authorized_balance": 3210.1,
+        "authorized_balance_cents": 321010,
+        "name": "Compte courant",
+        "updated_at": "2026-10-06T07:12:43.000Z",
+        "status": "active",
+        "main": true,
+        "is_external_account": false,
+        "account_number": "FAKE4a01"
+      }
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+[Unit]
+Description=Dashboard kiosk (labwc + Chromium)
+Wants=pi-dashboard.service systemd-logind.service
+After=pi-dashboard.service systemd-user-sessions.service systemd-logind.service getty@tty1.service
+Conflicts=getty@tty1.service
+ConditionPathExists=/dev/tty0
+StartLimitIntervalSec=0
+
+[Service]
+User=kiosk
+PAMName=pi-kiosk
+EnvironmentFile=/etc/pi-dashboard/kiosk.env
+ExecStart=/usr/bin/labwc -C /usr/local/share/pi-dashboard/labwc -S /usr/local/lib/pi-dashboard/kiosk-session
+Restart=always
+RestartSec=3
+UtmpIdentifier=tty1
+UtmpMode=user
+TTYPath=/dev/tty1
+TTYReset=yes
+TTYVHangup=yes
+TTYVTDisallocate=yes
+StandardInput=tty-fail
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,94 @@
+{
+  "global_status": "operational",
+  "global_message": "All systems operational",
+  "updated_at": "2026-10-07T12:30:05.412Z",
+  "components": [
+    {
+      "id": "c1",
+      "name": "Application",
+      "status": "operational",
+      "monitors": [
+        {
+          "type": "container",
+          "id": "12",
+          "name": "maintenant",
+          "status": "operational"
+        },
+        {
+          "type": "endpoint",
+          "id": "3",
+          "name": "https://app.example.net/healthz",
+          "status": "operational"
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "name": "Database",
+      "status": "operational",
+      "monitors": [
+        {
+          "type": "container",
+          "id": "14",
+          "name": "postgres",
+          "status": "operational"
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "name": "Reverse proxy",
+      "status": "operational",
+      "monitors": [
+        {
+          "type": "container",
+          "id": "9",
+          "name": "traefik",
+          "status": "operational"
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "name": "Backups",
+      "status": "operational",
+      "monitors": [
+        {
+          "type": "heartbeat",
+          "id": "2",
+          "name": "nightly-backup",
+          "status": "operational"
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "name": "Certificates",
+      "status": "operational",
+      "monitors": [
+        {
+          "type": "certificate",
+          "id": "5",
+          "name": "app.example.net",
+          "status": "operational"
+        }
+      ]
+    },
+    {
+      "id": "c6",
+      "name": "Mail relay",
+      "status": "operational",
+      "monitors": [
+        {
+          "type": "container",
+          "id": "21",
+          "name": "postfix",
+          "status": "operational"
+        }
+      ]
+    }
+  ],
+  "active_incidents": null,
+  "upcoming_maintenance": null,
+  "subscriptions_enabled": false
+}

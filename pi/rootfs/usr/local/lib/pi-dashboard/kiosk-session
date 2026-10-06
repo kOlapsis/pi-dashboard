@@ -1,0 +1,39 @@
+#!/bin/sh
+set -eu
+
+KIOSK_URL=${KIOSK_URL:-http://127.0.0.1:8080/}
+KIOSK_OUTPUT=${KIOSK_OUTPUT:-HDMI-A-1}
+
+p=${XDG_RUNTIME_DIR:?}/chromium
+rm -rf "$p"
+
+[ -z "${KIOSK_MODE:-}" ] || wlr-randr --output "$KIOSK_OUTPUT" --mode "$KIOSK_MODE" || true
+
+deadline=$(($(date +%s) + 90))
+until curl -fso /dev/null --max-time 2 "$KIOSK_URL"; do
+	[ "$(date +%s)" -lt "$deadline" ] || break
+	sleep 1
+done
+
+# shellcheck disable=SC2086
+exec chromium \
+	--ozone-platform=wayland \
+	--kiosk \
+	--lang=fr \
+	--user-data-dir="$p" \
+	--disk-cache-dir="$p/cache" \
+	--noerrdialogs \
+	--disable-infobars \
+	--disable-session-crashed-bubble \
+	--no-first-run \
+	--no-default-browser-check \
+	--password-store=basic \
+	--disable-extensions \
+	--disable-background-networking \
+	--disable-features=Translate \
+	--autoplay-policy=no-user-gesture-required \
+	--overscroll-history-navigation=0 \
+	--disable-pinch \
+	--enable-features=OverlayScrollbar \
+	${CHROMIUM_EXTRA:-} \
+	"$KIOSK_URL"

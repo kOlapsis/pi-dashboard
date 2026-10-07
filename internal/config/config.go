@@ -200,7 +200,7 @@ const minInterval = 30 * time.Second
 // Load reads and validates the YAML file. The returned warnings are non-fatal.
 func Load(path string) (*Config, []string, error) {
 	var warnings []string
-	if info, err := os.Stat(path); err == nil && info.Mode().Perm()&0o077 != 0 {
+	if info, err := os.Stat(path); err == nil && info.Mode().Perm()&0o077 != 0 && !fromCredentials(path) {
 		warnings = append(warnings, fmt.Sprintf("%s is readable by others (mode %04o), expected 0600", path, info.Mode().Perm()))
 	}
 	b, err := os.ReadFile(path)
@@ -212,6 +212,11 @@ func Load(path string) (*Config, []string, error) {
 		return nil, nil, fmt.Errorf("%s: %w", path, err)
 	}
 	return cfg, warnings, nil
+}
+
+func fromCredentials(path string) bool {
+	dir := os.Getenv("CREDENTIALS_DIRECTORY")
+	return dir != "" && strings.HasPrefix(path, strings.TrimRight(dir, "/")+"/")
 }
 
 func Parse(b []byte) (*Config, error) {

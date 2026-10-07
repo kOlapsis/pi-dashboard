@@ -1,3 +1,9 @@
+
+	require.NoError(t, os.Chmod(path, 0o440))
+	t.Setenv("CREDENTIALS_DIRECTORY", filepath.Dir(path))
+	_, warnings, err = Load(path)
+	require.NoError(t, err)
+	assert.Empty(t, warnings, "systemd credential files are owned by the service and need no warning")
 package config
 
 import (

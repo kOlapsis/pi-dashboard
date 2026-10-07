@@ -45,12 +45,7 @@ shot:
 
 boot-files:
 	go run ./pi/cmd/render -secrets pi/secrets.env -out out/boot
-	@if command -v cloud-init >/dev/null 2>&1; then \
-		cloud-init schema -c out/boot/user-data && \
-		cloud-init schema -t network-config -c out/boot/network-config; \
-	else \
-		echo "warning: cloud-init not found, skipping schema validation of out/boot" >&2; \
-	fi
+	sh scripts/check-boot-files.sh out/boot
 
 deploy: build-arm64
 	scp $(SSHOPT) out/$(BIN)_linux_arm64 $(PIUSER)@$(HOST):/tmp/$(BIN)

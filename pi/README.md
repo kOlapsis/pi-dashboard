@@ -34,7 +34,7 @@ Turns a stock Raspberry Pi OS Lite (64-bit, Trixie) card into a kiosk: a hardene
 make boot-files
 ```
 
-Writes `out/boot/{user-data,network-config,meta-data}` (0600, `out/` is gitignored) and runs `cloud-init schema` on the first two. They contain the Wi-Fi key and your API tokens.
+Writes `out/boot/{user-data,network-config,meta-data}` (0600, `out/` is gitignored), then validates `user-data` with `cloud-init schema` and `network-config` with `netplan generate` (cloud-init's own schema does not know the `wifis` key; on the Pi the file goes to netplan untouched). A missing tool only prints a warning. They contain the Wi-Fi key and your API tokens.
 
 ## 3. Flash
 
@@ -93,6 +93,6 @@ Extra Chromium flags go in `CHROMIUM_EXTRA` (`/etc/pi-dashboard/kiosk.env`). The
 
 ## Verified and assumed
 
-Checked on the workstation: `cloud-init schema` (26.1, the Pi ships 25.2) on both rendered files; a PyYAML round trip of every `write_files` entry against its source file; `shellcheck`; `systemd-analyze verify` on both units (only the missing binaries are reported); the installer itself, run as root in a Debian trixie container with stubbed `systemctl`, `raspi-config`, `timedatectl` and release download (success path, second run, sha256 mismatch, retries); the unattended-upgrades origins and the apt pin syntax with apt itself; `${CREDENTIALS_DIRECTORY}` and `${STATE_DIRECTORY}` expansion in `ExecStart=` (systemd 259 here, 257 on the Pi); the labwc 0.20.2 options and `rc.xml` syntax against its man pages; the package names in the Debian trixie and Raspberry Pi archives.
+Checked on the workstation: `cloud-init schema` (26.1, the Pi ships 25.2) on the rendered `user-data` and `netplan generate` on `network-config`; a PyYAML round trip of every `write_files` entry against its source file; `shellcheck`; `systemd-analyze verify` on both units (only the missing binaries are reported); the installer itself, run as root in a Debian trixie container with stubbed `systemctl`, `raspi-config`, `timedatectl` and release download (success path, second run, sha256 mismatch, retries); the unattended-upgrades origins and the apt pin syntax with apt itself; `${CREDENTIALS_DIRECTORY}` and `${STATE_DIRECTORY}` expansion in `ExecStart=` (systemd 259 here, 257 on the Pi); the labwc 0.20.2 options and `rc.xml` syntax against its man pages; the package names in the Debian trixie and Raspberry Pi archives.
 
 Not testable without the board, so assumed: that the panel EDID advertises 1024x600; that the PAM + logind session on tty1 gives labwc the DRM and input devices; Chromium GPU rendering on Wayland on the Pi 5; the netplan/NetworkManager Wi-Fi association from the derived key; Pi OS cloud-init 25.2 honouring the `user`, `keyboard`, `locale` and `power_state` keys as 26.1 does; the 10 to 15 minute estimate.

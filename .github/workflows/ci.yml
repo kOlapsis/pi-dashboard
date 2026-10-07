@@ -39,4 +39,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - run: shellcheck scripts/check-cgo.sh pi/install.sh pi/rootfs/usr/local/lib/pi-dashboard/kiosk-session
+      - run: shellcheck scripts/check-cgo.sh scripts/check-boot-files.sh pi/install.sh pi/rootfs/usr/local/lib/pi-dashboard/kiosk-session

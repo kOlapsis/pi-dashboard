@@ -15,6 +15,8 @@ until curl -fso /dev/null --max-time 2 "$KIOSK_URL"; do
 	sleep 1
 done
 
+/usr/local/bin/pi-dashboard kiosk --url "$KIOSK_URL" --output "$KIOSK_OUTPUT" &
+
 # shellcheck disable=SC2086
 exec chromium \
 	--ozone-platform=wayland \

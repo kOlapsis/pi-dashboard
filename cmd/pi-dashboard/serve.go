@@ -22,7 +22,6 @@ import (
 	"github.com/kolapsis/pi-dashboard/internal/config"
 	"github.com/kolapsis/pi-dashboard/internal/httpapi"
 	"github.com/kolapsis/pi-dashboard/internal/httpx"
-	"github.com/kolapsis/pi-dashboard/internal/night"
 	"github.com/kolapsis/pi-dashboard/internal/sched"
 	"github.com/kolapsis/pi-dashboard/internal/store"
 	"github.com/kolapsis/pi-dashboard/internal/web"
@@ -120,7 +119,8 @@ func runServe(ctx context.Context, args []string) error {
 		Demo:    *demoMode,
 		UI: httpapi.UI{
 			Scale: cfg.UI.Scale,
-			Night: httpapi.Night{Enabled: cfg.UI.Night.On(), From: cfg.UI.Night.From, To: cfg.UI.Night.To, Brightness: cfg.UI.Night.Brightness},
+			Idle:  httpapi.Idle{TimeoutS: int(cfg.UI.Idle.Timeout / time.Second)},
+			Night: httpapi.Night{Enabled: cfg.UI.Night.On(), From: cfg.UI.Night.From, To: cfg.UI.Night.To, Brightness: cfg.UI.Night.Brightness, ScreenOff: cfg.UI.Night.Off()},
 		},
 	}
 	httpSrv := &http.Server{
@@ -156,12 +156,6 @@ func runServe(ctx context.Context, args []string) error {
 		})
 		g.Go(func() error {
 			pruneHistory(gctx, clk, log, db, cfg.History.RetentionDays)
-			return nil
-		})
-	}
-	if cfg.UI.Night.On() {
-		g.Go(func() error {
-			night.Run(gctx, clk, log, night.Window{From: cfg.UI.Night.From, To: cfg.UI.Night.To}, cfg.UI.Night.PanelOffCmd, cfg.UI.Night.PanelOnCmd)
 			return nil
 		})
 	}

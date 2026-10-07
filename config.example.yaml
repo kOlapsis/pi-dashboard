@@ -4,15 +4,14 @@ timezone: Europe/Paris
 
 ui:
   scale: auto
+  idle:
+    timeout: 10m          # screen off after this much time without a touch; 0s keeps it on
   night:
     enabled: true
-    from: "23:00"
-    to: "07:00"
+    from: "00:00"
+    to: "08:30"
     brightness: 0.35
-    # Commands run by the pi-dashboard service at the window edges. They need a path to the
-    # kiosk's Wayland socket, which the hardened unit does not have by default: see pi/README.md.
-    # panel_off_cmd: [wlopm, --off, HDMI-A-1]
-    # panel_on_cmd: [wlopm, --on, HDMI-A-1]
+    screen_off: true      # screen off for the whole window; a touch wakes it for idle.timeout
 
 history:
   retention_days: 400

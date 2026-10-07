@@ -26,19 +26,25 @@ type Config struct {
 
 type UI struct {
 	Scale string `yaml:"scale"`
+	Idle  Idle   `yaml:"idle"`
 	Night Night  `yaml:"night"`
 }
 
+type Idle struct {
+	Timeout time.Duration `yaml:"timeout"`
+}
+
 type Night struct {
-	Enabled     *bool    `yaml:"enabled"`
-	From        string   `yaml:"from"`
-	To          string   `yaml:"to"`
-	Brightness  float64  `yaml:"brightness"`
-	PanelOffCmd []string `yaml:"panel_off_cmd"`
-	PanelOnCmd  []string `yaml:"panel_on_cmd"`
+	Enabled    *bool   `yaml:"enabled"`
+	From       string  `yaml:"from"`
+	To         string  `yaml:"to"`
+	Brightness float64 `yaml:"brightness"`
+	ScreenOff  *bool   `yaml:"screen_off"`
 }
 
 func (n Night) On() bool { return n.Enabled == nil || *n.Enabled }
+
+func (n Night) Off() bool { return n.ScreenOff == nil || *n.ScreenOff }
 
 type History struct {
 	RetentionDays int `yaml:"retention_days"`
@@ -227,7 +233,7 @@ func Default() *Config {
 		Listen:   "127.0.0.1:8080",
 		DataDir:  "/var/lib/pi-dashboard",
 		Timezone: "Europe/Paris",
-		UI:       UI{Scale: "auto", Night: Night{From: "23:00", To: "07:00", Brightness: 0.35}},
+		UI:       UI{Scale: "auto", Idle: Idle{Timeout: 10 * time.Minute}, Night: Night{From: "23:00", To: "07:00", Brightness: 0.35}},
 		History:  History{RetentionDays: 400},
 	}
 }
@@ -312,6 +318,9 @@ func (c *Config) Validate() error {
 	}
 	if _, err := time.LoadLocation(c.Timezone); err != nil {
 		fail("timezone: %v", err)
+	}
+	if t := c.UI.Idle.Timeout; t != 0 && t < time.Minute {
+		fail("ui.idle.timeout must be 0 or at least 1m")
 	}
 	if c.UI.Night.On() {
 		if err := (night.Window{From: c.UI.Night.From, To: c.UI.Night.To}).Validate(); err != nil {

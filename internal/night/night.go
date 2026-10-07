@@ -1,15 +1,10 @@
 package night
 
 import (
-	"context"
 	"fmt"
-	"log/slog"
-	"os/exec"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/kolapsis/pi-dashboard/internal/clock"
 )
 
 type Window struct {
@@ -49,37 +44,4 @@ func (w Window) Active(now time.Time) bool {
 		return m >= from && m < to
 	}
 	return m >= from || m < to
-}
-
-// Run executes offCmd when the window opens and onCmd when it closes, checking once a minute.
-func Run(ctx context.Context, clk clock.Clock, log *slog.Logger, w Window, offCmd, onCmd []string) {
-	if len(offCmd) == 0 && len(onCmd) == 0 {
-		return
-	}
-	prev := w.Active(clk.Now())
-	for {
-		select {
-		case <-ctx.Done():
-			return
-		case <-clk.After(time.Minute):
-		}
-		cur := w.Active(clk.Now())
-		if cur == prev {
-			continue
-		}
-		prev = cur
-		cmd := onCmd
-		if cur {
-			cmd = offCmd
-		}
-		if len(cmd) == 0 {
-			continue
-		}
-		cctx, cancel := context.WithTimeout(ctx, 30*time.Second)
-		out, err := exec.CommandContext(cctx, cmd[0], cmd[1:]...).CombinedOutput()
-		cancel()
-		if err != nil {
-			log.Warn("night command failed", "cmd", cmd, "err", err, "output", strings.TrimSpace(string(out)))
-		}
-	}
 }

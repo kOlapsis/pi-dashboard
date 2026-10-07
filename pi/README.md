@@ -54,6 +54,7 @@ The installer (`/usr/local/sbin/pi-dashboard-install`) waits for the network and
 cloud-init status --long
 sudo tail -n 30 /var/log/pi-dashboard-install.log
 systemctl is-active pi-dashboard pi-kiosk
+pgrep -a swayidle
 loginctl list-sessions
 curl -s http://127.0.0.1:8080/ | head -n 5
 sudo -u kiosk env XDG_RUNTIME_DIR=/run/user/$(id -u kiosk) WAYLAND_DISPLAY=wayland-0 wlr-randr
@@ -63,10 +64,11 @@ During the install `cloud-init status` says `running`. After a successful run it
 
 ## 6. Operate
 
-- `make deploy` builds the arm64 binary, installs it and restarts the service. `make deploy-config` pushes `CONFIG_YAML`. `make logs` follows both units.
+- `make deploy` builds the arm64 binary, installs it and restarts the service. `make deploy-config` pushes `CONFIG_YAML`. `make deploy-kiosk` pushes `rootfs/usr/local/lib/pi-dashboard/kiosk-session` and restarts `pi-kiosk`. `make logs` follows both units.
 - Debian security and Raspberry Pi archive updates install unattended; the Pi reboots at 04:30 when a reboot is needed. The journal is persistent and capped at 64 MB.
 - A new release tag does not update an already provisioned Pi: use `make deploy`, or re-flash. Re-provisioning in place is not supported (cloud-init is disabled).
 - `pi-dashboard doctor` runs every collector once: `sudo pi-dashboard doctor`.
+- Screen on/off is handled by `pi-dashboard kiosk` inside the session: `journalctl -u pi-kiosk -f` shows `wake`, `night` and `wlopm` lines. `swayidle` must be installed (it is by the installer); on a Pi provisioned before it was added: `sudo apt install swayidle`, then `make deploy-kiosk`.
 
 ## Display
 
@@ -89,7 +91,7 @@ Extra Chromium flags go in `CHROMIUM_EXTRA` (`/etc/pi-dashboard/kiosk.env`). The
 
 - `/etc/pi-dashboard/config.yaml` is root-only; the service receives it as a systemd credential and runs as a dynamic user with a strict sandbox (read-only filesystem, no capabilities, no `AF_NETLINK`, syscall allow-list). Chromium runs as `kiosk` on a throwaway tmpfs profile and only loads the local dashboard URL.
 - Chromium policies disable sync, sign-in, password and autofill stores, translation and metrics. `rpi-chromium-mods` is blocked by an apt pin because it adds `--force-renderer-accessibility` and `--enable-remote-extensions`.
-- `ui.night.panel_off_cmd` / `panel_on_cmd` (for example `wlopm`) cannot reach the compositor from the sandboxed service: it has neither the `kiosk` runtime directory nor its Wayland socket. Night dimming in the UI is unaffected.
+- The panel is driven from inside the session, not from the sandboxed service: `kiosk-session` starts `pi-dashboard kiosk` next to Chromium, which runs `swayidle` and `wlopm` with the `kiosk` user's Wayland socket. It reads `ui.idle.timeout` and `ui.night` from the dashboard API, so changing them is a `config.yaml` edit plus `sudo systemctl restart pi-dashboard`.
 
 ## Verified and assumed
 

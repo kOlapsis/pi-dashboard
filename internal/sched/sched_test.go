@@ -140,8 +140,8 @@ func TestCollectTimeoutAndPanic(t *testing.T) {
 
 type collectorFunc func(ctx context.Context) (any, error)
 
-func (f collectorFunc) Name() string                              { return "f" }
-func (f collectorFunc) Interval() time.Duration                   { return time.Minute }
+func (f collectorFunc) Name() string                             { return "f" }
+func (f collectorFunc) Interval() time.Duration                  { return time.Minute }
 func (f collectorFunc) Collect(ctx context.Context) (any, error) { return f(ctx) }
 
 func TestBackoff(t *testing.T) {
@@ -169,4 +169,77 @@ func TestJitterBounds(t *testing.T) {
 		assert.LessOrEqual(t, d, 66*time.Second)
 	}
 	assert.Zero(t, s.jitter(0))
+}
+
+type notifyingCollector struct {
+	fakeCollector
+	seen []any
+}
+
+func (n *notifyingCollector) Notify(prev, cur any) []string {
+	n.seen = append(n.seen, prev)
+	p, c := prev.(map[string]int), cur.(map[string]int)
+	if c["n"] > p["n"] {
+		return []string{"n went up"}
+	}
+	return nil
+}
+
+func TestNotifierEvents(t *testing.T) {
+	clk := clock.NewFake(time.Date(2026, 10, 7, 9, 0, 0, 0, time.UTC))
+	s := newTestScheduler(clk)
+	c := &notifyingCollector{fakeCollector: fakeCollector{name: "x", interval: time.Minute}}
+	s.Add(c)
+	s.Restore(Snapshot{
+		Collectors: map[string]Entry{"x": {Data: json.RawMessage(`{"n":0}`)}},
+		Events:     []Event{{Seq: 41, At: clk.Now().Add(-time.Hour), Collector: "x", Label: "old"}},
+	})
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go func() { _ = s.Run(ctx) }()
+
+	events := func() []Event { return s.Snapshot().Events }
+	advanceUntil(t, clk, time.Second, func() bool { return len(events()) == 2 })
+	ev := events()[1]
+	assert.Equal(t, uint64(42), ev.Seq, "sequence continues after the restored events")
+	assert.Equal(t, "x", ev.Collector)
+	assert.Equal(t, "n went up", ev.Label)
+	assert.Equal(t, clk.Now(), ev.At)
+	assert.Equal(t, map[string]int{"n": 0}, c.seen[0], "the restored snapshot is decoded into the collector's type")
+
+	advanceUntil(t, clk, time.Minute, func() bool { return len(events()) == 3 })
+	assert.Equal(t, map[string]int{"n": 1}, c.seen[1], "then the previous typed value is used")
+	assert.Equal(t, uint64(43), events()[2].Seq)
+}
+
+func TestEventsAreCapped(t *testing.T) {
+	clk := clock.NewFake(time.Date(2026, 10, 7, 9, 0, 0, 0, time.UTC))
+	s := newTestScheduler(clk)
+	c := &notifyingCollector{fakeCollector: fakeCollector{name: "x", interval: time.Minute}}
+	s.Add(c)
+	s.Restore(Snapshot{Collectors: map[string]Entry{"x": {Data: json.RawMessage(`{"n":0}`)}}})
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go func() { _ = s.Run(ctx) }()
+	advanceUntil(t, clk, time.Minute, func() bool { return int(c.calls.Load()) >= maxEvents+5 })
+	evs := s.Snapshot().Events
+	require.Len(t, evs, maxEvents)
+	assert.Equal(t, evs[len(evs)-1].Seq-uint64(maxEvents-1), evs[0].Seq)
+}
+
+type panickyCollector struct{ fakeCollector }
+
+func (*panickyCollector) Notify(any, any) []string { panic("nope") }
+
+func TestNotifierPanicIsContained(t *testing.T) {
+	clk := clock.NewFake(time.Date(2026, 10, 7, 9, 0, 0, 0, time.UTC))
+	s := newTestScheduler(clk)
+	c := &panickyCollector{fakeCollector{name: "x", interval: time.Minute}}
+	s.Add(c)
+	s.Restore(Snapshot{Collectors: map[string]Entry{"x": {Data: json.RawMessage(`{"n":0}`)}}})
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go func() { _ = s.Run(ctx) }()
+	advanceUntil(t, clk, time.Second, func() bool { return s.Snapshot().Collectors["x"].Status.State == StateOK })
+	assert.Empty(t, s.Snapshot().Events)
 }

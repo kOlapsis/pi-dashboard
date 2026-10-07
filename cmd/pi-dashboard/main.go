@@ -33,11 +33,13 @@ func run(args []string) error {
 		return runServe(ctx, args)
 	case "doctor":
 		return runDoctor(ctx, args)
+	case "kiosk":
+		return runKiosk(ctx, args)
 	case "version":
 		fmt.Println("pi-dashboard", version)
 		return nil
 	default:
-		return fmt.Errorf("unknown command %q (serve, doctor, version)", cmd)
+		return fmt.Errorf("unknown command %q (serve, doctor, kiosk, version)", cmd)
 	}
 }
 

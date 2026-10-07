@@ -34,6 +34,7 @@ type Collector struct {
 	mode     Mode
 	clock    clock.Clock
 	gen      func(step int, now time.Time) any
+	notify   func(prev, cur any) []string
 
 	mu   sync.Mutex
 	step int
@@ -57,25 +58,32 @@ func (c *Collector) Collect(_ context.Context) (any, error) {
 
 func (c *Collector) Summary(any) string { return "demo data" }
 
+func (c *Collector) Notify(prev, cur any) []string {
+	if c.notify == nil {
+		return nil
+	}
+	return c.notify(prev, cur)
+}
+
 // Collectors returns one fake collector per source, with intervals short enough to watch the UI move.
 func Collectors(clk clock.Clock, loc *time.Location, seed uint64, modes map[string]Mode) []collector.Collector {
 	rng := rand.New(rand.NewPCG(seed, seed^0x9e3779b97f4a7c15))
 	g := &gen{rng: rng, loc: loc}
-	mk := func(name string, interval time.Duration, f func(step int, now time.Time) any) collector.Collector {
-		return &Collector{name: name, interval: interval, mode: modes[name], clock: clk, gen: f}
+	mk := func(name string, interval time.Duration, f func(step int, now time.Time) any, notify func(prev, cur any) []string) collector.Collector {
+		return &Collector{name: name, interval: interval, mode: modes[name], clock: clk, gen: f, notify: notify}
 	}
 	return []collector.Collector{
-		mk("mail", 7*time.Second, g.mail),
-		mk("github", 11*time.Second, g.github),
-		mk("umami", 9*time.Second, g.umami),
-		mk("stripe", 13*time.Second, g.stripe),
-		mk("qonto", 15*time.Second, g.qonto),
-		mk("weather", 20*time.Second, g.weather),
-		mk("calendar", 17*time.Second, g.calendar),
-		mk("health", 8*time.Second, g.health),
-		mk("registry", 30*time.Second, g.registry),
-		mk("maintenant", 10*time.Second, g.maintenant),
-		mk("shm", 30*time.Second, g.shm),
+		mk("mail", 7*time.Second, g.mail, mail.Notify),
+		mk("github", 11*time.Second, g.github, nil),
+		mk("umami", 9*time.Second, g.umami, nil),
+		mk("stripe", 13*time.Second, g.stripe, stripe.Notify),
+		mk("qonto", 15*time.Second, g.qonto, qonto.Notify),
+		mk("weather", 20*time.Second, g.weather, nil),
+		mk("calendar", 17*time.Second, g.calendar, nil),
+		mk("health", 8*time.Second, g.health, health.Notify),
+		mk("registry", 30*time.Second, g.registry, nil),
+		mk("maintenant", 10*time.Second, g.maintenant, nil),
+		mk("shm", 30*time.Second, g.shm, nil),
 	}
 }
 
@@ -85,6 +93,11 @@ type gen struct {
 }
 
 func (g *gen) in(now time.Time) time.Time { return now.In(g.loc) }
+
+func (g *gen) day(now time.Time) time.Time {
+	n := g.in(now)
+	return time.Date(n.Year(), n.Month(), n.Day(), 0, 0, 0, 0, g.loc)
+}
 
 func (g *gen) series(now time.Time, days int, end float64, perDay float64, noise float64) []store.Point {
 	pts := make([]store.Point, 0, days+1)
@@ -121,11 +134,13 @@ func (g *gen) mail(step int, now time.Time) any {
 		{"Umami", "Rapport hebdomadaire – maintenant.dev"},
 		{"Initiative Gironde", "Votre dossier de prêt d'honneur"},
 	}
-	unseen := 4 + (step/3)%5
+	unseen := 4 + (step/4)%5
+	day := g.day(now)
 	items := make([]mail.Item, 0, 5)
 	for i := 0; i < 5 && i < len(senders); i++ {
-		s := senders[(i+step/4)%len(senders)]
-		items = append(items, mail.Item{From: s.from, Subject: s.subject, At: now.Add(-time.Duration(12+i*47+step) * time.Minute)})
+		k := (i + step/4) % len(senders)
+		s := senders[k]
+		items = append(items, mail.Item{From: s.from, Subject: s.subject, At: day.Add(8*time.Hour - time.Duration(k*37)*time.Minute)})
 	}
 	return mail.Data{Account: "benjamin@kolapsis.com", Unseen: unseen, Items: items}
 }
@@ -178,7 +193,7 @@ func (g *gen) stripe(step int, now time.Time) any {
 	mrr := int64(20300)
 	accounts := []stripe.Account{
 		{Name: "Maintenant", Livemode: true, MRRCents: mrr, Subs: 7, MonthNetCents: 44700 + int64(step/6)*2900, Payments: 3 + step/6, AvailableCents: 31240, PendingCents: 14900,
-			Last: &stripe.Payment{AmountCents: 2900, Currency: "eur", Label: "Maintenant Pro", At: now.Add(-26 * time.Hour)}},
+			Last: &stripe.Payment{AmountCents: 2900, Currency: "eur", Label: "Maintenant Pro", At: g.day(now).Add(9*time.Hour + time.Duration(step/8)*time.Minute)}},
 		{Name: "RestoreProof", Livemode: true, Last: nil},
 		{Name: "Ackify", Livemode: true, Last: nil},
 	}
@@ -195,16 +210,17 @@ func (g *gen) stripe(step int, now time.Time) any {
 }
 
 func (g *gen) qonto(step int, now time.Time) any {
+	day := g.day(now)
 	sas := qonto.Org{
 		Name:       "kOlapsis SAS",
 		TotalCents: 1248032 - int64(step)*1200,
 		Accounts:   []qonto.Account{{Name: "Compte principal", BalanceCents: 1248032 - int64(step)*1200, AuthorizedCents: 1239032, Main: true}},
 		Month:      qonto.Month{InCents: 44700, OutCents: 206498},
 		Recent: []qonto.Transaction{
-			{Label: "Stripe Payments UK Ltd", AmountCents: 44700, Side: "credit", Type: "income", At: now.Add(-20 * time.Hour)},
-			{Label: "OVH SAS", AmountCents: 2398, Side: "debit", Type: "direct_debit", At: now.Add(-2 * 24 * time.Hour)},
-			{Label: "Cabinet Delmas", AmountCents: 42000, Side: "debit", Type: "transfer", At: now.Add(-3 * 24 * time.Hour)},
-			{Label: "URSSAF", AmountCents: 61200, Side: "debit", Type: "direct_debit", At: now.Add(-5 * 24 * time.Hour)},
+			{Label: "Stripe Payments UK Ltd", AmountCents: 44700, Side: "credit", Type: "income", At: day.Add(4*time.Hour + time.Duration(step/10)*time.Minute)},
+			{Label: "OVH SAS", AmountCents: 2398, Side: "debit", Type: "direct_debit", At: day.Add(-2 * 24 * time.Hour)},
+			{Label: "Cabinet Delmas", AmountCents: 42000, Side: "debit", Type: "transfer", At: day.Add(-3 * 24 * time.Hour)},
+			{Label: "URSSAF", AmountCents: 61200, Side: "debit", Type: "direct_debit", At: day.Add(-5 * 24 * time.Hour)},
 		},
 	}
 	ei := qonto.Org{
@@ -213,8 +229,8 @@ func (g *gen) qonto(step int, now time.Time) any {
 		Accounts:   []qonto.Account{{Name: "Compte courant", BalanceCents: 321010, AuthorizedCents: 321010, Main: true}},
 		Month:      qonto.Month{InCents: 225000, OutCents: 61240},
 		Recent: []qonto.Transaction{
-			{Label: "Virement client", AmountCents: 225000, Side: "credit", Type: "income", At: now.Add(-4 * 24 * time.Hour)},
-			{Label: "URSSAF", AmountCents: 56200, Side: "debit", Type: "direct_debit", At: now.Add(-6 * 24 * time.Hour)},
+			{Label: "Virement client", AmountCents: 225000, Side: "credit", Type: "income", At: day.Add(-4 * 24 * time.Hour)},
+			{Label: "URSSAF", AmountCents: 56200, Side: "debit", Type: "direct_debit", At: day.Add(-6 * 24 * time.Hour)},
 		},
 	}
 	total := sas.TotalCents + ei.TotalCents

@@ -25,6 +25,15 @@ func TestExampleParses(t *testing.T) {
 	assert.Equal(t, "status", cfg.Collectors.Maintenant.Instances[0].Mode)
 	assert.Equal(t, "shm", cfg.Collectors.JSONPoll[0].Name)
 	assert.True(t, cfg.UI.Night.On())
+	assert.True(t, cfg.UI.Night.Off())
+	assert.Equal(t, 10*time.Minute, cfg.UI.Idle.Timeout)
+}
+
+func TestIdleAndScreenOff(t *testing.T) {
+	cfg, err := Parse([]byte("ui: {idle: {timeout: 0s}, night: {screen_off: false}}\n"))
+	require.NoError(t, err)
+	assert.Equal(t, time.Duration(0), cfg.UI.Idle.Timeout)
+	assert.False(t, cfg.UI.Night.Off())
 }
 
 func TestDefaultsAndMinimumInterval(t *testing.T) {
@@ -50,6 +59,8 @@ func TestErrors(t *testing.T) {
 		"unknown key":        "listen: x\nbogus: 1\n",
 		"bad timezone":       "timezone: Mars/Olympus\n",
 		"bad night":          "ui: {night: {from: '25:00', to: '07:00'}}\n",
+		"short idle":         "ui: {idle: {timeout: 10s}}\n",
+		"removed panel cmd":  "ui: {night: {panel_off_cmd: [wlopm]}}\n",
 		"mail missing":       "collectors: {mail: {user: a}}\n",
 		"stripe no accounts": "collectors: {stripe: {accounts: []}}\n",
 		"qonto incomplete":   "collectors: {qonto: {orgs: [{name: a}]}}\n",

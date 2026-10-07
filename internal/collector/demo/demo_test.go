@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/kolapsis/pi-dashboard/internal/clock"
+	"github.com/kolapsis/pi-dashboard/internal/collector"
 )
 
 func TestCollectorsProduceData(t *testing.T) {
@@ -41,6 +42,32 @@ func TestCollectorsProduceData(t *testing.T) {
 	for _, name := range []string{"mail", "github", "umami", "stripe", "qonto", "weather", "calendar", "health", "registry", "maintenant", "shm"} {
 		assert.True(t, seen[name], name)
 	}
+}
+
+func TestDemoEmitsEvents(t *testing.T) {
+	loc := time.UTC
+	clk := clock.NewFake(time.Date(2026, 10, 7, 9, 0, 0, 0, loc))
+	byName := map[string]collector.Collector{}
+	for _, c := range Collectors(clk, loc, 3, nil) {
+		byName[c.Name()] = c
+	}
+	events := func(name string, steps int) (labels []string) {
+		c := byName[name]
+		prev, err := c.Collect(context.Background())
+		require.NoError(t, err)
+		for range steps {
+			cur, err := c.Collect(context.Background())
+			require.NoError(t, err)
+			labels = append(labels, c.(collector.Notifier).Notify(prev, cur)...)
+			prev = cur
+		}
+		return labels
+	}
+	assert.NotEmpty(t, events("mail", 8))
+	assert.NotEmpty(t, events("stripe", 16))
+	assert.NotEmpty(t, events("qonto", 20))
+	assert.Contains(t, events("health", 10), "restoreproof.io est down")
+	assert.Empty(t, events("weather", 3))
 }
 
 func TestGeneratorsAreDeterministic(t *testing.T) {

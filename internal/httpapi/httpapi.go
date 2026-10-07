@@ -17,7 +17,12 @@ const keepAlive = 25 * time.Second
 
 type UI struct {
 	Scale string `json:"scale"`
+	Idle  Idle   `json:"idle"`
 	Night Night  `json:"night"`
+}
+
+type Idle struct {
+	TimeoutS int `json:"timeout_s"`
 }
 
 type Night struct {
@@ -25,6 +30,7 @@ type Night struct {
 	From       string  `json:"from"`
 	To         string  `json:"to"`
 	Brightness float64 `json:"brightness"`
+	ScreenOff  bool    `json:"screen_off"`
 }
 
 type State struct {
@@ -35,6 +41,7 @@ type State struct {
 	Demo       bool                   `json:"demo"`
 	UI         UI                     `json:"ui"`
 	Collectors map[string]sched.Entry `json:"collectors"`
+	Events     []sched.Event          `json:"events"`
 }
 
 type Server struct {
@@ -69,6 +76,7 @@ func (s *Server) state(snap sched.Snapshot) State {
 		Demo:       s.Demo,
 		UI:         s.UI,
 		Collectors: snap.Collectors,
+		Events:     snap.Events,
 	}
 }
 

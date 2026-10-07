@@ -16,6 +16,9 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 let current = null;
 let firstVersion = null;
 let pollTimer = null;
+let eventSeq = null;
+let toastTimer = null;
+const TOAST_MS = 20000;
 const shown = new Map();
 
 /* ---------- DOM helpers ---------- */
@@ -597,6 +600,26 @@ function renderFooter(st, now) {
   replaceChildren($("foot-right"), right);
 }
 
+/* ---------- events ---------- */
+
+function renderEvents(st) {
+  const events = st.events || [];
+  const last = events.length ? events[events.length - 1].seq : 0;
+  if (eventSeq == null) {
+    eventSeq = last;
+    return;
+  }
+  if (last === eventSeq) return;
+  const fresh = events.filter((e) => e.seq > eventSeq).slice(-3);
+  eventSeq = last;
+  if (!fresh.length) return;
+  const toast = $("toast");
+  replaceChildren(toast, fresh.map((e) => h("div", { class: "line", text: e.label })));
+  toast.hidden = false;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { toast.hidden = true; }, TOAST_MS);
+}
+
 /* ---------- night, scale, data flow ---------- */
 
 function parseHM(s) {
@@ -660,6 +683,7 @@ function apply(st) {
     pollTimer = null;
   }
   render();
+  renderEvents(st);
 }
 
 async function poll() {

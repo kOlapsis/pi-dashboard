@@ -22,8 +22,8 @@ import (
 
 type stub struct{}
 
-func (stub) Name() string                          { return "weather" }
-func (stub) Interval() time.Duration               { return time.Minute }
+func (stub) Name() string                         { return "weather" }
+func (stub) Interval() time.Duration              { return time.Minute }
 func (stub) Collect(context.Context) (any, error) { return map[string]int{"temp": 14}, nil }
 
 func newServer(t *testing.T) *httptest.Server {
@@ -31,7 +31,10 @@ func newServer(t *testing.T) *httptest.Server {
 	clk := clock.NewFake(time.Date(2026, 10, 7, 9, 0, 0, 0, time.UTC))
 	s := sched.New(clk, slog.New(slog.NewTextHandler(io.Discard, nil)), sched.Options{})
 	s.Add(stub{})
-	s.Restore(sched.Snapshot{Collectors: map[string]sched.Entry{"weather": {Status: sched.Status{LastOK: clk.Now().Add(-time.Hour)}, Data: json.RawMessage(`{"temp":12}`)}}})
+	s.Restore(sched.Snapshot{
+		Collectors: map[string]sched.Entry{"weather": {Status: sched.Status{LastOK: clk.Now().Add(-time.Hour)}, Data: json.RawMessage(`{"temp":12}`)}},
+		Events:     []sched.Event{{Seq: 7, At: clk.Now().Add(-time.Minute), Collector: "mail", Label: "Mail de Alice"}},
+	})
 	srv := &Server{
 		Sched:   s,
 		Static:  fstest.MapFS{"index.html": {Data: []byte("<html>ok</html>")}, "style.css": {Data: []byte("body{}")}, "fonts/a.woff2": {Data: []byte("x")}},
@@ -39,7 +42,7 @@ func newServer(t *testing.T) *httptest.Server {
 		Log:     slog.New(slog.NewTextHandler(io.Discard, nil)),
 		Version: "1.2.3",
 		TZ:      "Europe/Paris",
-		UI:      UI{Scale: "auto", Night: Night{Enabled: true, From: "23:00", To: "07:00", Brightness: 0.35}},
+		UI:      UI{Scale: "auto", Idle: Idle{TimeoutS: 600}, Night: Night{Enabled: true, From: "23:00", To: "07:00", Brightness: 0.35, ScreenOff: true}},
 	}
 	ts := httptest.NewServer(srv.Handler())
 	t.Cleanup(ts.Close)
@@ -59,6 +62,11 @@ func TestState(t *testing.T) {
 	assert.Equal(t, "1.2.3", st.Version)
 	assert.Equal(t, "Europe/Paris", st.TZ)
 	assert.Equal(t, "23:00", st.UI.Night.From)
+	assert.True(t, st.UI.Night.ScreenOff)
+	assert.Equal(t, 600, st.UI.Idle.TimeoutS)
+	require.Len(t, st.Events, 1)
+	assert.Equal(t, uint64(7), st.Events[0].Seq)
+	assert.Equal(t, "Mail de Alice", st.Events[0].Label)
 	e := st.Collectors["weather"]
 	assert.Equal(t, sched.StateStale, e.Status.State)
 	assert.JSONEq(t, `{"temp":12}`, string(e.Data))

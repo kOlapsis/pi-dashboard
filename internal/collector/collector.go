@@ -26,6 +26,11 @@ type Timeouter interface {
 	Timeout() time.Duration
 }
 
+// Notifier returns one label per change between two successful collections that deserves attention.
+type Notifier interface {
+	Notify(prev, cur any) []string
+}
+
 type Deps struct {
 	HTTP  *http.Client
 	Clock clock.Clock

@@ -21,6 +21,7 @@ make boot-files                           # render cloud-init files from pi/secr
 pi-dashboard doctor --config config.yaml --only umami,qonto --json   # run collectors once, print OK/KO
 pi-dashboard serve --demo --demo-fail=stripe --demo-stale=qonto      # degraded states in demo
 pi-dashboard serve --demo --static-dir internal/web/static           # edit the UI without rebuilding
+pi-dashboard kiosk --url http://127.0.0.1:8080/ --output HDMI-A-1    # screen on/off sidecar, runs inside the Pi session
 ```
 
 Lint config is `.golangci.yml` (v2, standard set + errorlint, gocritic, misspell, unconvert, unparam). CI also runs `shellcheck` on `scripts/check-cgo.sh`, `pi/install.sh` and `pi/rootfs/usr/local/lib/pi-dashboard/kiosk-session`.
@@ -37,15 +38,16 @@ collectors ──▶ sched ──▶ Snapshot ──▶ httpapi (/api/state, /ap
                  └──▶ store.History (SQLite, hourly buckets) + snapshot.json (warm restart)
 ```
 
-- **`internal/collector`**: the `Collector` interface (`Name`, `Interval`, `Collect(ctx) (any, error)`), optional `Summarizer` (one-line for `doctor`) and `Timeouter` (overrides the scheduler's 20 s default). `Deps` carries the shared HTTP client, `clock.Clock`, `store.History`, logger and `*time.Location`. Helpers `Delta`, `Series`, `Record` wrap history for sparklines and deltas.
+- **`internal/collector`**: the `Collector` interface (`Name`, `Interval`, `Collect(ctx) (any, error)`), optional `Summarizer` (one-line for `doctor`), `Timeouter` (overrides the scheduler's 20 s default) and `Notifier` (`Notify(prev, cur any) []string`: labels for changes that deserve attention, implemented by mail, stripe, qonto and health as a package-level `Notify` so the demo can reuse it). `Deps` carries the shared HTTP client, `clock.Clock`, `store.History`, logger and `*time.Location`. Helpers `Delta`, `Series`, `Record` wrap history for sparklines and deltas.
 - **One package per source** under `internal/collector/<name>/`: `collector.go` (New, Name, Interval, Collect, Summary), `types.go` (the `Data` struct returned by `Collect`, JSON tags consumed by `app.js`), sometimes `api.go`/`backfill.go`/`format.go`. The collector keeps a `baseURL` field so tests can point it at `httptest`.
-- **`internal/sched`**: one goroutine per collector, jittered intervals, exponential backoff capped at 15 min, panic recovery. On failure the entry goes `stale` (last good data kept) while within `max(3×interval, 15 min)` of the last success, then `error`. `Restore` seeds entries from the previous `snapshot.json` so the screen is never blank after a restart.
+- **`internal/sched`**: one goroutine per collector, jittered intervals, exponential backoff capped at 15 min, panic recovery. On failure the entry goes `stale` (last good data kept) while within `max(3×interval, 15 min)` of the last success, then `error`. `Restore` seeds entries from the previous `snapshot.json` so the screen is never blank after a restart. After each success it calls the collector's `Notify` with the previous typed value (decoded from the restored JSON when needed) and appends the labels to `Snapshot.Events` (last 20, monotonic `Seq`).
 - **`internal/store`**: `History` interface with two implementations, `DB` (SQLite, WAL, single connection) and `Mem` (demo, doctor, tests). Points are truncated to `Bucket` (1 h); `At` looks ±36 h around the requested time.
 - **`internal/config`**: YAML with `KnownFields(true)` (unknown keys are fatal). A collector is enabled by the presence of its section (pointer non-nil). `applyDefaults` sets per-collector default intervals and clamps to 30 s minimum; `Validate` collects all errors at once.
 - **`internal/httpapi`**: `GET /api/state` (JSON), `GET /api/events` (SSE, same payload on every scheduler change, coalesced 250 ms), `/healthz`, static files. CSP is `default-src 'self'`: no inline scripts, no external resources.
-- **`internal/web/static`**: `index.html`, `app.js`, `style.css`, fonts. Vanilla JS, no build step. `app.js` renders tiles by looking up `state.collectors[<name>]`; the "Traction" tile merges `registry`, `maintenant`, `github` and the `shm` jsonpoll.
+- **`internal/web/static`**: `index.html`, `app.js`, `style.css`, fonts. Vanilla JS, no build step. `app.js` renders tiles by looking up `state.collectors[<name>]`; the "Traction" tile merges `registry`, `maintenant`, `github` and the `shm` jsonpoll. New entries in `state.events` show a toast for 20 s.
 - **`internal/clock`**: `Clock` interface with `Real` and `Fake` (`Advance`, `Pending`). Everything time-dependent takes a `clock.Clock` so tests are deterministic.
-- **`internal/night`**: night window parsing and the optional panel on/off commands. UI dimming itself happens in `app.js` from `state.ui.night`.
+- **`internal/night`**: `Window` parsing and `Active(now)`. UI dimming happens in `app.js` from `state.ui.night`; the panel itself is driven by the kiosk sidecar.
+- **`internal/kiosk`**: the `pi-dashboard kiosk` sidecar, started by `pi/rootfs/.../kiosk-session` next to Chromium inside the labwc session (it needs the session's Wayland socket, which the sandboxed `pi-dashboard` service does not have). It follows `/api/events`, keeps a `swayidle` child armed with `ui.idle.timeout` (`wlopm --off` on timeout, `--on` on touch), turns the panel off for the `ui.night` window when `screen_off` is set, and on a new fresh event outside the night window runs `wlopm --on` and re-arms `swayidle`. `Machine` is the testable core, `Runner` abstracts the commands.
 
 ### Collector name contract
 

@@ -5,7 +5,7 @@ LOG=/var/log/pi-dashboard-install.log
 ASSET=pi-dashboard_linux_arm64
 BIN=/usr/local/bin/pi-dashboard
 CMDLINE=/boot/firmware/cmdline.txt
-PACKAGES=(labwc wlr-randr wlopm chromium libgl1-mesa-dri libpam-systemd fonts-liberation fonts-noto-color-emoji unattended-upgrades)
+PACKAGES=(labwc wlr-randr wlopm swayidle chromium libgl1-mesa-dri libpam-systemd fonts-liberation fonts-noto-color-emoji unattended-upgrades)
 APT=(apt-get -o Acquire::Retries=5 -o Acquire::Check-Date=false -o DPkg::Lock::Timeout=300 -o Dpkg::Options::=--force-confold)
 
 export DEBIAN_FRONTEND=noninteractive

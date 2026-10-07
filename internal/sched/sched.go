@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"math/rand/v2"
+	"reflect"
 	"sync"
 	"time"
 
@@ -36,10 +37,18 @@ type Entry struct {
 	Data   json.RawMessage `json:"data,omitempty"`
 }
 
+type Event struct {
+	Seq       uint64    `json:"seq"`
+	At        time.Time `json:"at"`
+	Collector string    `json:"collector"`
+	Label     string    `json:"label"`
+}
+
 type Snapshot struct {
 	Seq        uint64           `json:"seq"`
 	Now        time.Time        `json:"now"`
 	Collectors map[string]Entry `json:"collectors"`
+	Events     []Event          `json:"events,omitempty"`
 }
 
 type Options struct {
@@ -50,7 +59,10 @@ type Options struct {
 	Rand           *rand.Rand
 }
 
-const staleGrace = 15 * time.Minute
+const (
+	staleGrace = 15 * time.Minute
+	maxEvents  = 20
+)
 
 type Scheduler struct {
 	clock clock.Clock
@@ -60,6 +72,9 @@ type Scheduler struct {
 	mu      sync.RWMutex
 	cols    []collector.Collector
 	entries map[string]*Entry
+	last    map[string]any
+	events  []Event
+	evSeq   uint64
 	seq     uint64
 	subs    map[chan Snapshot]struct{}
 	dirty   chan struct{}
@@ -86,6 +101,7 @@ func New(clk clock.Clock, log *slog.Logger, opts Options) *Scheduler {
 		log:     log,
 		opts:    opts,
 		entries: map[string]*Entry{},
+		last:    map[string]any{},
 		subs:    map[chan Snapshot]struct{}{},
 		dirty:   make(chan struct{}, 1),
 	}
@@ -118,6 +134,10 @@ func (s *Scheduler) Restore(prev Snapshot) {
 		e.Data = p.Data
 		e.Status.LastOK = p.Status.LastOK
 		e.Status.State = StateStale
+	}
+	s.events = trimEvents(append([]Event(nil), prev.Events...))
+	for _, ev := range s.events {
+		s.evSeq = max(s.evSeq, ev.Seq)
 	}
 	s.seq++
 }
@@ -207,6 +227,8 @@ func (s *Scheduler) record(c collector.Collector, data any, err error) {
 		if merr != nil {
 			err = fmt.Errorf("encode: %w", merr)
 		} else {
+			s.addEvents(c, now, s.changes(c, e, data))
+			s.last[c.Name()] = data
 			e.Data = raw
 			e.Status.LastOK = now
 			e.Status.State = StateOK
@@ -230,6 +252,51 @@ func (s *Scheduler) record(c collector.Collector, data any, err error) {
 	case s.dirty <- struct{}{}:
 	default:
 	}
+}
+
+func (s *Scheduler) changes(c collector.Collector, e *Entry, data any) (labels []string) {
+	n, ok := c.(collector.Notifier)
+	if !ok || data == nil {
+		return nil
+	}
+	prev := s.last[c.Name()]
+	if prev == nil && len(e.Data) > 0 {
+		prev = decodeAs(e.Data, data)
+	}
+	if prev == nil {
+		return nil
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			s.log.Warn("notify panicked", "collector", c.Name(), "panic", r)
+			labels = nil
+		}
+	}()
+	return n.Notify(prev, data)
+}
+
+func decodeAs(raw json.RawMessage, like any) any {
+	v := reflect.New(reflect.TypeOf(like))
+	if err := json.Unmarshal(raw, v.Interface()); err != nil {
+		return nil
+	}
+	return v.Elem().Interface()
+}
+
+func (s *Scheduler) addEvents(c collector.Collector, now time.Time, labels []string) {
+	for _, label := range labels {
+		s.evSeq++
+		s.events = append(s.events, Event{Seq: s.evSeq, At: now, Collector: c.Name(), Label: label})
+		s.log.Info("event", "collector", c.Name(), "label", label)
+	}
+	s.events = trimEvents(s.events)
+}
+
+func trimEvents(evs []Event) []Event {
+	if len(evs) > maxEvents {
+		return evs[len(evs)-maxEvents:]
+	}
+	return evs
 }
 
 func (s *Scheduler) notify(ctx context.Context) {
@@ -260,7 +327,7 @@ func (s *Scheduler) notify(ctx context.Context) {
 func (s *Scheduler) Snapshot() Snapshot {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	out := Snapshot{Seq: s.seq, Now: s.clock.Now(), Collectors: make(map[string]Entry, len(s.entries))}
+	out := Snapshot{Seq: s.seq, Now: s.clock.Now(), Collectors: make(map[string]Entry, len(s.entries)), Events: append([]Event(nil), s.events...)}
 	for name, e := range s.entries {
 		out.Collectors[name] = *e
 	}

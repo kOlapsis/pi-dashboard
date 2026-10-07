@@ -1,4 +1,4 @@
-.PHONY: run check test lint vet cgo build build-arm64 shot boot-files deploy deploy-config logs ssh clean
+.PHONY: run check test lint vet cgo build build-arm64 shot boot-files deploy deploy-config deploy-kiosk logs ssh clean
 
 BIN      := pi-dashboard
 VERSION  ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
@@ -54,6 +54,10 @@ deploy: build-arm64
 deploy-config:
 	scp $(SSHOPT) $(CONFIG_YAML) $(PIUSER)@$(HOST):/tmp/config.yaml
 	$(SSH) 'sudo install -m0600 -o root -g root /tmp/config.yaml /etc/$(BIN)/config.yaml && rm /tmp/config.yaml && sudo systemctl restart $(BIN) && systemctl is-active $(BIN)'
+
+deploy-kiosk:
+	scp $(SSHOPT) pi/rootfs/usr/local/lib/pi-dashboard/kiosk-session $(PIUSER)@$(HOST):/tmp/kiosk-session
+	$(SSH) 'sudo install -m0755 /tmp/kiosk-session /usr/local/lib/pi-dashboard/kiosk-session && rm /tmp/kiosk-session && sudo systemctl restart pi-kiosk && systemctl is-active pi-kiosk'
 
 logs:
 	$(SSH) -t 'journalctl -f -u $(BIN) -u pi-kiosk'

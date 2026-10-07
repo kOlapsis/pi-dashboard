@@ -18,7 +18,9 @@ A personal desk dashboard for a Raspberry Pi 5 with a 7" 1024×600 HDMI screen. 
 | Top bar | Open-Meteo | current weather, min/max, rain probability |
 | Sites | HTTP checks | status, latency, TLS expiry |
 
-Every tile keeps its last good values when a source fails and says how old they are. The screen dims at night.
+Every tile keeps its last good values when a source fails and says how old they are.
+
+The screen turns off after `ui.idle.timeout` without a touch and for the whole night window, a touch wakes it. A new unread mail, a Stripe payment, an incoming Qonto transaction or a monitored site going down shows a toast and wakes the screen (not at night).
 
 ## How it works
 
@@ -35,6 +37,7 @@ collectors ──▶ scheduler ──▶ snapshot ──▶ GET /api/state
 - `internal/sched`: one goroutine per collector, exponential backoff, `ok` / `stale` / `error` states.
 - `internal/store`: pure-Go SQLite (`modernc.org/sqlite`), so the binary cross-compiles with `CGO_ENABLED=0`.
 - `internal/web`: the page, embedded in the binary. No build step, no framework.
+- `internal/kiosk`: `pi-dashboard kiosk`, run inside the Chromium session on the Pi. Follows `/api/events`, drives `swayidle` (idle timeout) and `wlopm` (panel on/off, night window, wake on event).
 - `pi/`: cloud-init provisioning for Raspberry Pi OS Lite (Trixie) and the labwc + Chromium kiosk. See [pi/README.md](pi/README.md).
 
 ## Quick start
@@ -77,6 +80,7 @@ Secrets never leave the Pi: the config is readable by root only and handed to th
 make build-arm64                         # out/pi-dashboard_linux_arm64 + SHA256SUMS
 make deploy HOST=pi-dash.local           # scp + install + restart
 make deploy-config CONFIG_YAML=~/.config/pi-dashboard/config.yaml
+make deploy-kiosk                        # push pi/rootfs/.../kiosk-session and restart the kiosk
 make logs                                # journalctl -f on the Pi
 ```
 
